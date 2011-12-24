@@ -5875,6 +5875,12 @@ function Chart(options, callback) {
 		 * Get the actual axis extremes
 		 */
 		function getExtremes() {
+			
+			console.log("->getExtremes: min="+min+
+						",max="+max+",dataMin="+dataMin+
+						",dataMax="+dataMax+",userMin="+userMin+
+						",userMax="+userMax);
+			
 			return {
 				min: min,
 				max: max,
@@ -7637,6 +7643,8 @@ function Chart(options, callback) {
 			serie,
 			hasRendered = chart.hasRendered;
 
+        console.log("->initSeries");
+
 		// an inverted chart can't take a column series and vice versa
 		if (hasRendered) {
 			if (inverted && type === 'column') {
@@ -8346,6 +8354,9 @@ function Chart(options, callback) {
 			chartSubtitle.align(null, null, spacingBox);
 		}
 
+
+		console.log("->resize: redrawing...");
+
 		redraw(animation);
 
 
@@ -8380,6 +8391,11 @@ function Chart(options, callback) {
 			width: chartWidth - spacingLeft - spacingRight,
 			height: chartHeight - spacingTop - spacingBottom
 		};
+		
+		console.log("->setChartSize: spacingLeft=" + spacingLeft +
+					",spacingTop="+spacingTop+
+					",width="+(chartWidth - spacingLeft - spacingRight)+
+					",height="+(chartHeight - spacingTop - spacingBottom));
 
 		each(axes, function (axis) {
 			axis.setAxisSize();
@@ -8390,6 +8406,9 @@ function Chart(options, callback) {
 	 * Initial margins before auto size margins are applied
 	 */
 	resetMargins = function () {
+		
+		console.log("->resetMargins");
+		
 		plotTop = pick(optionsMarginTop, spacingTop);
 		marginRight = pick(optionsMarginRight, spacingRight);
 		marginBottom = pick(optionsMarginBottom, spacingBottom);
@@ -8401,6 +8420,9 @@ function Chart(options, callback) {
 	 * Draw the borders and backgrounds for chart and plot area
 	 */
 	drawChartBox = function () {
+		
+		console.log("->drawChartBox");
+		
 		var chartBorderWidth = optionsChart.borderWidth || 0,
 			chartBackgroundColor = optionsChart.backgroundColor,
 			plotBackgroundColor = optionsChart.plotBackgroundColor,
@@ -8438,6 +8460,12 @@ function Chart(options, callback) {
 		// Plot background
 		if (plotBackgroundColor) {
 			if (!plotBackground) {
+				
+				console.log("->drawChartBox: plotting background rendering rect: plotLeft="+plotLeft+
+								",plotTop="+plotTop+
+								",plotWidth="+plotWidth+
+								",plotHeight="+plotHeight);
+				
 				plotBackground = renderer.rect(plotLeft, plotTop, plotWidth, plotHeight, 0)
 					.attr({
 						fill: plotBackgroundColor
@@ -8760,7 +8788,11 @@ function Chart(options, callback) {
 	chart.showLoading = showLoading;
 	chart.pointCount = 0;
 	chart.counters = new ChartCounters();
-	/*
+
+
+
+    // TEMPORÁRIO POR DOUGLAS:
+    	
 	if ($) $(function() {
 		$container = $('#container');
 		var origChartWidth,
@@ -8773,7 +8805,7 @@ function Chart(options, callback) {
 						origChartWidth = chartWidth;
 						origChartHeight = chartHeight;
 					}
-					chart.resize(chartWidth *= 1.1, chartHeight *= 1.1);
+					chart.setSize(chartWidth *= 1.1, chartHeight *= 1.1);
 				});
 			$('<button>-</button>')
 				.insertBefore($container)
@@ -8782,7 +8814,7 @@ function Chart(options, callback) {
 						origChartWidth = chartWidth;
 						origChartHeight = chartHeight;
 					}
-					chart.resize(chartWidth *= 0.9, chartHeight *= 0.9);
+					chart.setSize(chartWidth *= 0.9, chartHeight *= 0.9);
 				});
 			$('<button>1:1</button>')
 				.insertBefore($container)
@@ -8791,11 +8823,11 @@ function Chart(options, callback) {
 						origChartWidth = chartWidth;
 						origChartHeight = chartHeight;
 					}
-					chart.resize(origChartWidth, origChartHeight);
+					chart.setSize(origChartWidth, origChartHeight);
 				});
 		}
 	})
-	*/
+	
 
 
 
@@ -11037,7 +11069,7 @@ var ColumnSeries = extendClass(Series, {
 
 		// record the new values
 		each(points, function (point, i) {
-			var plotY = point.plotY,
+			var plotY = point.plotY + 0,
 				yBottom = point.yBottom || translatedThreshold,
 				barX = point.plotX + pointXOffset,
 				barY = mathCeil(mathMin(plotY, yBottom)),
